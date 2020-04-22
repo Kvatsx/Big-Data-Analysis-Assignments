@@ -31,9 +31,8 @@ Path = "./Data/" # 10-min
 MAX_SIZE = 10000
 tweets = [OrderedDict(), OrderedDict(), OrderedDict(), OrderedDict()]
 time_track = [0]*5
-# time_track[0] = 0; time_track[1] = 0; timerthirty = 0; timerforty = 0
+time_track[0] = 0; time_track[1] = 0; timerthirty = 0; timerforty = 0
 file_count = [0]*4
-file_count[3] = 14
 tweet_time_counter = [0, 0]
 
 def getCurrentTime():
@@ -57,79 +56,86 @@ def handleTweet(temp, uid):
 	temp[uid] = 1
 	return temp
 
+
+def dumpTweetsData(time_track, current_time, file_count, tweets):
+	if (file_count[0] < 15 and current_time - time_track[0] > 600 and current_time - time_track[0] < 660 ):
+		time_track[0] = current_time
+		file_count[0]+=1
+		pickle.dump(tweets[0], open(Path + '10-min/tweet_' + str(file_count[0]), 'wb'))
+		tweets[0] = OrderedDict()
+
+	if (file_count[1] < 15 and current_time - time_track[1] > 1200 and current_time - time_track[1] < 1260 ):
+		time_track[1] = current_time
+		file_count[1]+=1
+		pickle.dump(tweets[1], open(Path + '20-min/tweet_' + str(file_count[1]), 'wb'))
+		tweets[1] = OrderedDict()
+
+	if (file_count[2] < 15 and current_time - time_track[2] > 1800 and current_time - time_track[2] < 1860 ):
+		time_track[2] = current_time
+		file_count[2]+=1
+		pickle.dump(tweets[2], open(Path + '30-min/tweet_' + str(file_count[2]), 'wb'))
+		tweets[2] = OrderedDict()
+
+	if (file_count[3] < 15 and current_time - time_track[3] > 2400 and current_time - time_track[3] < 2460 ):
+		time_track[3] = current_time		
+		file_count[3]+=1
+		pickle.dump(tweets[3], open(Path + '40-min/tweet_' + str(file_count[3]), 'wb'))
+		tweets[3] = OrderedDict()
+	return time_track, file_count, tweets
+
+def StoreTweets(tweets, uid):
+	# ---------------------
+	if file_count[0] < 15:
+		if len(tweets[0]) == MAX_SIZE:
+			tweets[0] = handleTweet(tweets[0], uid)
+		else:
+			if uid in tweets[0]:
+				tweets[0][uid] = tweets[0][uid] + 1
+			else:
+				tweets[0][uid] = 1
+	# ---------------------
+	if file_count[1] < 15:
+		if len(tweets[1]) == MAX_SIZE:
+			tweets[1] = handleTweet(tweets[1], uid)
+		else:
+			if uid in tweets[1]:
+				tweets[1][uid] = tweets[1][uid] + 1
+			else:
+				tweets[1][uid] = 1
+	# ---------------------
+	if file_count[2] < 15:
+		if len(tweets[2]) == MAX_SIZE:
+			tweets[2] = handleTweet(tweets[2], uid)
+		else:
+			if uid in tweets[2]:
+				tweets[2][uid] = tweets[2][uid] + 1
+			else:
+				tweets[2][uid] = 1
+	# ---------------------
+	if file_count[3] < 15:
+		if len(tweets[3]) == MAX_SIZE:
+			tweets[3] = handleTweet(tweets[3], uid)
+		else:
+			if uid in tweets[3]:
+				tweets[3][uid] = tweets[3][uid] + 1
+			else:
+				tweets[3][uid] = 1
+	return tweets
+
+
 class StdOutListener(StreamListener):
 
 	def on_status(self, post):
 		tweet_time_counter[0] += 1
 		current_time = time.time()
-		# print(file_count)
-		# print(time_track[0])
-		# if (file_count[0] < 15 and current_time - time_track[0] > 600 and current_time - time_track[0] < 660 ):
-		# 	time_track[0] = current_time
-		# 	file_count[0]+=1
-		# 	pickle.dump(tweets[0], open(Path + '10-min/tweet_' + str(file_count[0]), 'wb'))
-		# 	tweets[0] = OrderedDict()
+		time_track, file_count, tweets = dumpTweetsData(time_track, current_time, file_count, tweets)
 
-		# if (file_count[1] < 15 and current_time - time_track[1] > 1200 and current_time - time_track[1] < 1260 ):
-		# 	time_track[1] = current_time
-		# 	file_count[1]+=1
-		# 	pickle.dump(tweets[1], open(Path + '20-min/tweet_' + str(file_count[1]), 'wb'))
-		# 	tweets[1] = OrderedDict()
-
-		# if (file_count[2] < 15 and current_time - time_track[2] > 1800 and current_time - time_track[2] < 1860 ):
-		# 	time_track[2] = current_time
-		# 	file_count[2]+=1
-		# 	pickle.dump(tweets[2], open(Path + '30-min/tweet_' + str(file_count[2]), 'wb'))
-		# 	tweets[2] = OrderedDict()
-
-		if (file_count[3] < 15 and current_time - time_track[3] > 2400 and current_time - time_track[3] < 2460 ):
-			time_track[3] = current_time		
-			file_count[3]+=1
-			pickle.dump(tweets[3], open(Path + '40-min/tweet_' + str(file_count[3]), 'wb'))
-			tweets[3] = OrderedDict()
-		
 		uid = post.user.id
 		if current_time-time_track[4] > 120 and current_time - time_track[4] < 150:
 			tweet_time_counter[1] += current_time-time_track[4]
 			time_track[4] = current_time
 			print("Tweets: {}, Time: {} min".format(tweet_time_counter[0], tweet_time_counter[1]/60))
-		# ---------------------
-		# if file_count[0] < 15:
-		# 	if len(tweets[0]) == MAX_SIZE:
-		# 		tweets[0] = handleTweet(tweets[0], uid)
-		# 	else:
-		# 		if uid in tweets[0]:
-		# 			tweets[0][uid] = tweets[0][uid] + 1
-		# 		else:
-		# 			tweets[0][uid] = 1
-		# ---------------------
-		# if file_count[1] < 15:
-		# 	if len(tweets[1]) == MAX_SIZE:
-		# 		tweets[1] = handleTweet(tweets[1], uid)
-		# 	else:
-		# 		if uid in tweets[1]:
-		# 			tweets[1][uid] = tweets[1][uid] + 1
-		# 		else:
-		# 			tweets[1][uid] = 1
-		# ---------------------
-		# if file_count[2] < 15:
-		# 	if len(tweets[2]) == MAX_SIZE:
-		# 		tweets[2] = handleTweet(tweets[2], uid)
-		# 	else:
-		# 		if uid in tweets[2]:
-		# 			tweets[2][uid] = tweets[2][uid] + 1
-		# 		else:
-		# 			tweets[2][uid] = 1
-		# ---------------------
-		if file_count[3] < 15:
-			if len(tweets[3]) == MAX_SIZE:
-				tweets[3] = handleTweet(tweets[3], uid)
-			else:
-				if uid in tweets[3]:
-					tweets[3][uid] = tweets[3][uid] + 1
-				else:
-					tweets[3][uid] = 1
-
+		tweets = StoreTweets(tweets, uid)
 
 	def on_error(self, status):
 		print("[Error] Status: {}, Time: {}".format(status, getCurrentTime()))
