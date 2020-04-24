@@ -27,11 +27,11 @@ consumer_key =  "365Nf7GiaeSbWjCCxF7enLG1N"
 consumer_secret =  "rkaXlWMgWqmqS3UDwz9R3XPEWFsPP1gqmgZdoP08dlXP2dcRoN"
 
 
-Path = "./Data/" # 10-min
+Path = "./KafkaData/" # 10-min
 MAX_SIZE = 10000
 tweets = [OrderedDict(), OrderedDict(), OrderedDict(), OrderedDict()]
 time_track = [0]*5
-time_track[0] = 0; time_track[1] = 0; timerthirty = 0; timerforty = 0
+time_track[0] = 0; time_track[1] = 0; time_track[2] = 0; time_track[3] = 0
 file_count = [0]*4
 tweet_time_counter = [0, 0]
 
@@ -57,31 +57,31 @@ def handleTweet(temp, uid):
 	return temp
 
 
-def dumpTweetsData(time_track, current_time, file_count, tweets):
-	if (file_count[0] < 15 and current_time - time_track[0] > 600 and current_time - time_track[0] < 660 ):
-		time_track[0] = current_time
+def dumpTweetsData(ttrack, current_time, file_count, tweets):
+	if (file_count[0] < 15 and current_time - ttrack[0] > 600 and current_time - ttrack[0] < 660 ):
+		ttrack[0] = current_time
 		file_count[0]+=1
 		pickle.dump(tweets[0], open(Path + '10-min/tweet_' + str(file_count[0]), 'wb'))
 		tweets[0] = OrderedDict()
 
-	if (file_count[1] < 15 and current_time - time_track[1] > 1200 and current_time - time_track[1] < 1260 ):
-		time_track[1] = current_time
+	if (file_count[1] < 15 and current_time - ttrack[1] > 1200 and current_time - ttrack[1] < 1260 ):
+		ttrack[1] = current_time
 		file_count[1]+=1
 		pickle.dump(tweets[1], open(Path + '20-min/tweet_' + str(file_count[1]), 'wb'))
 		tweets[1] = OrderedDict()
 
-	if (file_count[2] < 15 and current_time - time_track[2] > 1800 and current_time - time_track[2] < 1860 ):
-		time_track[2] = current_time
+	if (file_count[2] < 15 and current_time - ttrack[2] > 1800 and current_time - ttrack[2] < 1860 ):
+		ttrack[2] = current_time
 		file_count[2]+=1
 		pickle.dump(tweets[2], open(Path + '30-min/tweet_' + str(file_count[2]), 'wb'))
 		tweets[2] = OrderedDict()
 
-	if (file_count[3] < 15 and current_time - time_track[3] > 2400 and current_time - time_track[3] < 2460 ):
-		time_track[3] = current_time		
+	if (file_count[3] < 15 and current_time - ttrack[3] > 2400 and current_time - ttrack[3] < 2460 ):
+		ttrack[3] = current_time		
 		file_count[3]+=1
 		pickle.dump(tweets[3], open(Path + '40-min/tweet_' + str(file_count[3]), 'wb'))
 		tweets[3] = OrderedDict()
-	return time_track, file_count, tweets
+	return ttrack, file_count, tweets
 
 def StoreTweets(tweets, uid):
 	# ---------------------
@@ -126,6 +126,7 @@ def StoreTweets(tweets, uid):
 class StdOutListener(StreamListener):
 
 	def on_status(self, post):
+		global time_track, file_count, tweets
 		tweet_time_counter[0] += 1
 		current_time = time.time()
 		time_track, file_count, tweets = dumpTweetsData(time_track, current_time, file_count, tweets)

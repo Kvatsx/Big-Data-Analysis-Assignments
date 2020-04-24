@@ -6,18 +6,24 @@ import numpy as np
 Path = "./Data/"
 Trials = 15
 Time = [10, 20, 30, 40]
+
 FolderName = ["10-min", "20-min", "30-min", "40-min"]
 
 def readFile(name):
     return pickle.load(open(name, 'rb'))
 
+def readTweetCounts(name):
+    return pickle.load(open(name, 'rb'))
+
 def AMS():
     surprise_nums = {10: [], 20: [], 30: [], 40: []}
+    TweetCount = readTweetCounts("./Data/TweetCount.pkl")
     for i in range(len(FolderName)):
         for j in range(Trials):
             tweets = readFile(Path + FolderName[i] + "/tweet_" + str(j+1))
             values = list(tweets.values()) 
-            sum_values = sum(values)
+            sum_values = TweetCount[Time[i]][j]
+            # sum_values = sum(values)
             print("Sum_Values:", sum_values)
             denom = len(tweets)
             num = 0
