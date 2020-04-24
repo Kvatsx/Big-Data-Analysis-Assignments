@@ -27,7 +27,7 @@ consumer_key =  "365Nf7GiaeSbWjCCxF7enLG1N"
 consumer_secret =  "rkaXlWMgWqmqS3UDwz9R3XPEWFsPP1gqmgZdoP08dlXP2dcRoN"
 
 
-Path = "./KafkaData/" # 10-min
+Path = "./Data/" # 10-min
 MAX_SIZE = 10000
 tweets = [OrderedDict(), OrderedDict(), OrderedDict(), OrderedDict()]
 time_track = [0]*5
