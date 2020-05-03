@@ -27,7 +27,7 @@ def ConvertDataset():
     keysList = list(graph.keys())
     keysList = [int(x) for x in keysList]
     keysList.sort()
-    pointer = 0
+    pointer = 1
     for i in range(1, max(keysList)):
         if (keysList[pointer] == i):
             pointer += 1
